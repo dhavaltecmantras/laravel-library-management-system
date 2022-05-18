@@ -19,10 +19,10 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('login', [ApiController::class, 'authenticate'])->name('login');
-Route::post('register', [ApiController::class, 'register'])->name('register');
+Route::post('login', [ApiController::class, 'authenticate']);
+Route::post('register', [ApiController::class, 'register']);
 
 Route::group(['middleware' => ['jwt.verify']], function() {
-    Route::get('logout', [ApiController::class, 'logout'])->name('logout');
+    Route::get('logout', [ApiController::class, 'logout1']);
     Route::get('get-user', [ApiController::class, 'getUser'])->name('get-user');
 });

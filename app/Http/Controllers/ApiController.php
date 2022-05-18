@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -70,17 +71,20 @@ class ApiController extends Controller
                 ], 400);
             }
         } catch (JWTException $e) {
-            return $credentials;
+            // return $credentials;
             return response()->json([
                 'success' => false,
                 'message' => 'Could not create token.',
             ], 500);
         }
 
+        $user = Auth::user();
+
         //Token created, return with success response and jwt token
         return response()->json([
             'success' => true,
             'token' => $token,
+            'user' => $user,
         ]);
     }
 
