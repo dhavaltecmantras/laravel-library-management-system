@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\BookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +25,7 @@ Route::post('register', [ApiController::class, 'register']);
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('logout', [ApiController::class, 'logout1']);
-    Route::get('get-user', [ApiController::class, 'getUser'])->name('get-user');
+    Route::get('get-user', [ApiController::class, 'getUser']);
+    Route::post('add-book-details', [BookController::class, 'addBookDetails']);
+    Route::get('get-book-details', [BookController::class, 'getBookDetails']);
 });
