@@ -28,4 +28,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('get-user', [ApiController::class, 'getUser']);
     Route::post('add-book-details', [BookController::class, 'addBookDetails']);
     Route::get('get-book-details', [BookController::class, 'getBookDetails']);
+    Route::delete('delete-book-details/{id}', [BookController::class, 'deleteBookDetails']);
+    Route::get('get-book-details-by-id/{id}', [BookController::class, 'getBookDetailsById']);
+    Route::post('update-book-details', [BookController::class, 'updateBookDetails']);
 });

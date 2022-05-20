@@ -19,4 +19,15 @@ class BookRepository
     {
         return Book::get();
     }
+
+    /**
+     * This function is use to get a specific book's detail.
+     *
+     * @param integer $id
+     * @return Collection
+     */
+    public function getBookDetailsById(int $id): Collection
+    {
+        return Book::where('id', $id)->get();
+    }
 }
