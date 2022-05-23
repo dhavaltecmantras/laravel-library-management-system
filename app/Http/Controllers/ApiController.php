@@ -19,11 +19,12 @@ class ApiController extends Controller
     public function register(Request $request)
     {
         //Validate data
-        $data = $request->only('name', 'email', 'password');
+        $data = $request->only('name', 'email', 'password', 'role');
         $validator = Validator::make($data, [
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|max:50'
+            'password' => 'required|string|min:6|max:50',
+            'role' => 'required',
         ]);
 
         //Send failed response if request is not valid
@@ -35,7 +36,8 @@ class ApiController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password)
+            'password' => bcrypt($request->password),
+            'role' => $request->role
         ]);
 
         //User created, return success response
