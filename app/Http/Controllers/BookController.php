@@ -133,4 +133,21 @@ class BookController extends Controller
             );
         }
     }
+
+    // public function getTotalBookQuantity(): JsonResponse
+    // {
+    //     try {
+    //         $bookDetailsData = $this->bookService->getBookDetailsById($id);
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Book Details are fetched successfully.',
+    //             'data'    => $bookDetailsData
+    //         ], Response::HTTP_OK);
+    //     } catch (\Throwable $th) {
+    //         return response()->json(
+    //             $th->getMessage(),
+    //             JsonResponse::HTTP_BAD_REQUEST
+    //         );
+    //     }
+    // }
 }
