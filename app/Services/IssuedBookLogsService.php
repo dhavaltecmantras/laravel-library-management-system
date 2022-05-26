@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Repositories\IssuedBookLogsRepository;
 use App\Domain\Actions\AddIssuedBookLogsAction;
 use App\Domain\Actions\UpdateBookCountsAction;
+use App\Domain\Actions\UpdateBookDetailsAction;
+use App\Domain\Actions\UpdateIssuedBookLogsStatus;
 use App\Repositories\BookRepository;
 
 /**
@@ -16,17 +18,23 @@ class IssuedBookLogsService
     private $addIssuedBookLogsAction;
     private $updateBookCountsAction;
     private $bookRepository;
+    private $updateBookDetailsAction;
+    private $updateIssuedBookLogsStatus;
 
     public function __construct(
         IssuedBookLogsRepository $issuedBookLogsRepository,
         AddIssuedBookLogsAction $addIssuedBookLogsAction,
         UpdateBookCountsAction $updateBookCountsAction,
-        BookRepository $bookRepository
+        BookRepository $bookRepository,
+        UpdateBookDetailsAction $updateBookDetailsAction,
+        UpdateIssuedBookLogsStatus $updateIssuedBookLogsStatus,
     ) {
         $this->issuedBookLogsRepository = $issuedBookLogsRepository;
         $this->addIssuedBookLogsAction = $addIssuedBookLogsAction;
         $this->updateBookCountsAction = $updateBookCountsAction;
         $this->bookRepository = $bookRepository;
+        $this->updateBookDetailsAction = $updateBookDetailsAction;
+        $this->updateIssuedBookLogsStatus = $updateIssuedBookLogsStatus;
     }
 
     /**
@@ -91,6 +99,39 @@ class IssuedBookLogsService
             return [
                 'data'      => $allIssuedBookLogData->first(),
                 'message'   => 'Book log is fetched successfully.',
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'error' => $th->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * This function is used to update issued book logs.
+     *
+     * @param array $data
+     * @return array
+     */
+    public function updateIssuedBookLogs(array $data): array
+    {
+        try {
+            $updateBookDetailsParameter = [
+                'id'      => $data['id'],
+                'status'  => $data['status']
+            ];
+            $allIssuedBookLogData = $this->updateIssuedBookLogsStatus->do($updateBookDetailsParameter);
+            $bookDetailsData = $this->bookRepository->getBookDetailsById((int) $data['book_id'])->first();
+            if ($allIssuedBookLogData['id'] && $data['status'] == "3") {
+                $updateBookCountsPayload = [
+                    "id"        => $data['book_id'],
+                    "quantity"  => $data['status'] == "3" ? $bookDetailsData->quantity + (int) $data['issued_quantity'] : $bookDetailsData->quantity
+                ];
+                $updatedBookCount = $this->updateBookCountsAction->do($updateBookCountsPayload);
+            }
+            return [
+                'id'      => $allIssuedBookLogData['id'],
+                'message' => 'Issued book details are updated successfully.',
             ];
         } catch (\Throwable $th) {
             return [

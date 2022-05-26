@@ -16,7 +16,8 @@ class AddIssuedBookLogsAction extends Action
         'user_phone_number' => 'required',
         'user_email' => 'required',
         'notes' => 'required',
-        'issued_quantity' => 'required'
+        'issued_quantity' => 'required',
+        'status' => 'required',
     ];
 
     public function do(array $data): array

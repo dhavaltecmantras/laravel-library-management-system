@@ -8,9 +8,6 @@ class UpdateBookDetailsAction extends Action
 {
     const RULES = [
         'id'             => 'required',
-        'book_name'      => 'required',
-        'description'    => 'required',
-        'price'          => 'required',
         'quantity'       => 'required'
     ];
 

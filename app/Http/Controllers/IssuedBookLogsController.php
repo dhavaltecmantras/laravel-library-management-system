@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IssuedBookLogsRequest;
+use App\Http\Requests\UpdateIssuedBookLogsRequest;
 use App\Services\IssuedBookLogsService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class IssuedBookLogsController extends Controller
@@ -75,6 +75,30 @@ class IssuedBookLogsController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Issued book log is fetched successfully.',
+                'data'    => $issuedBookLogData
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(
+                $th->getMessage(),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    /**
+     * This function is used to update issued book logs.
+     *
+     * @param UpdateIssuedBookLogsRequest $request
+     * @return JsonResponse
+     */
+    public function updateIssuedBookLogs(UpdateIssuedBookLogsRequest $request): JsonResponse
+    {
+        try {
+            $data = $request->all();
+            $issuedBookLogData = $this->issuedBookLogsService->updateIssuedBookLogs($data);
+            return response()->json([
+                'success' => true,
+                'message' => 'Issued book details are updated successfully.',
                 'data'    => $issuedBookLogData
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
