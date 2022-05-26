@@ -123,7 +123,7 @@ class BookController extends Controller
             $bookDetailsData = $this->bookService->updateBookDetails($request);
             return response()->json([
                 'success' => true,
-                'message' => 'Book Details are created successfully',
+                'message' => 'Book Details are updated successfully',
                 'data'    => $bookDetailsData
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {

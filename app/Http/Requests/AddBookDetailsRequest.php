@@ -27,7 +27,8 @@ class AddBookDetailsRequest extends FormRequest
             'book_name'      => 'required',
             'description'    => 'required',
             'price'          => 'required',
-            'quantity'       => 'required'
+            'quantity'       => 'required',
+            'penalty'        => 'required',
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Requests\IssuedBookLogsRequest;
 use App\Http\Requests\UpdateIssuedBookLogsRequest;
 use App\Services\IssuedBookLogsService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class IssuedBookLogsController extends Controller
@@ -100,6 +101,30 @@ class IssuedBookLogsController extends Controller
                 'success' => true,
                 'message' => 'Issued book details are updated successfully.',
                 'data'    => $issuedBookLogData
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(
+                $th->getMessage(),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    /**
+     * Calculate Penalty based on the issued date of book.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function calculatePenalty(Request $request): JsonResponse
+    {
+        try {
+            $data = $request->all();
+            $calculatePenaltyData = $this->issuedBookLogsService->calculatePenalty($data);
+            return response()->json([
+                'success' => true,
+                'message' => 'Penalty Calculation is done successfully.',
+                'data'    => $calculatePenaltyData
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json(

@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Repositories\IssuedBookLogsRepository;
 use App\Domain\Actions\AddIssuedBookLogsAction;
+use App\Domain\Actions\CalculatePenaltyForIssuedBook;
 use App\Domain\Actions\UpdateBookCountsAction;
 use App\Domain\Actions\UpdateBookDetailsAction;
 use App\Domain\Actions\UpdateIssuedBookLogsStatus;
 use App\Repositories\BookRepository;
+use Carbon\Carbon;
 
 /**
  * Class IssuedBookLogsService.
@@ -20,6 +22,7 @@ class IssuedBookLogsService
     private $bookRepository;
     private $updateBookDetailsAction;
     private $updateIssuedBookLogsStatus;
+    private $calculatePenaltyForIssuedBook;
 
     public function __construct(
         IssuedBookLogsRepository $issuedBookLogsRepository,
@@ -28,6 +31,7 @@ class IssuedBookLogsService
         BookRepository $bookRepository,
         UpdateBookDetailsAction $updateBookDetailsAction,
         UpdateIssuedBookLogsStatus $updateIssuedBookLogsStatus,
+        CalculatePenaltyForIssuedBook $calculatePenaltyForIssuedBook,
     ) {
         $this->issuedBookLogsRepository = $issuedBookLogsRepository;
         $this->addIssuedBookLogsAction = $addIssuedBookLogsAction;
@@ -35,6 +39,7 @@ class IssuedBookLogsService
         $this->bookRepository = $bookRepository;
         $this->updateBookDetailsAction = $updateBookDetailsAction;
         $this->updateIssuedBookLogsStatus = $updateIssuedBookLogsStatus;
+        $this->calculatePenaltyForIssuedBook = $calculatePenaltyForIssuedBook;
     }
 
     /**
@@ -132,6 +137,46 @@ class IssuedBookLogsService
             return [
                 'id'      => $allIssuedBookLogData['id'],
                 'message' => 'Issued book details are updated successfully.',
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'error' => $th->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Calculate Penalty based on the issued date of book.
+     *
+     * @param array $data
+     * @return array
+     */
+    public function calculatePenalty(array $data): array
+    {
+        try {
+            $previousDate = Carbon::now()->subDays(7);
+            $bookIssueDate = Carbon::parse($data['created_at']);
+            if ($previousDate > $bookIssueDate) {
+                $penaltyForNoOfDays = $previousDate->diffInDays($bookIssueDate);
+                $bookData = $this->bookRepository->getBookDetailsById($data['book_id'])->first();
+                $totalPenalty = $bookData->penalty * $penaltyForNoOfDays;
+                $calculatePenaltyPayload = [
+                    'id'        => $data['id'],
+                    'penalty'   => $totalPenalty,
+                    'status'    => 2
+                ];
+
+                $calculatedPenaltyData = $this->calculatePenaltyForIssuedBook->do($calculatePenaltyPayload);
+            } else {
+                return [
+                    'success'   => false,
+                    'message'   => 'Due date is far so currenty there is no penalty.',
+                ];
+            }
+
+            return [
+                'success'   => true,
+                'message'   => 'Penalty Calculation is done successfully.',
             ];
         } catch (\Throwable $th) {
             return [

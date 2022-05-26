@@ -10,7 +10,8 @@ class AddBookDetailsAction extends Action
         'book_name'      => 'required',
         'description'    => 'required',
         'price'          => 'required',
-        'quantity'       => 'required'
+        'quantity'       => 'required',
+        'penalty'        => 'required',
     ];
 
     public function do(array $data): array

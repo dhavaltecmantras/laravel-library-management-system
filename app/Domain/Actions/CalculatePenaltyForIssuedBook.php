@@ -4,10 +4,12 @@ namespace App\Domain\Actions;
 
 use App\Models\IssuedBookLogs;
 
-class UpdateIssuedBookLogsAction extends Action
+class CalculatePenaltyForIssuedBook extends Action
 {
     const RULES = [
-        'quantity'       => 'required'
+        'id'         => 'required',
+        'penalty'    => 'required',
+        'status'     => 'required',
     ];
 
     public function do(array $data): array
@@ -17,8 +19,7 @@ class UpdateIssuedBookLogsAction extends Action
         $updatedIssuedBookDetails = IssuedBookLogs::where('id', (int) $data['id'])->update($data);
 
         return [
-            'id'        => $updatedIssuedBookDetails['id'],
-            'instance'  => $updatedIssuedBookDetails
+            'id'        => $updatedIssuedBookDetails
         ];
     }
 }

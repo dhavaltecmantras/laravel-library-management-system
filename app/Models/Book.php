@@ -16,5 +16,6 @@ class Book extends Model
         'description',
         'price',
         'quantity',
+        'penalty',
     ];
 }

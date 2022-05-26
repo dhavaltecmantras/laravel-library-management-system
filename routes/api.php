@@ -40,4 +40,5 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('get-all-issued-books', [IssuedBookLogsController::class, 'getAllIssuedBookLogs']);
     Route::get('get-book-log-by-id/{id}', [IssuedBookLogsController::class, 'getBookLogById']);
     Route::post('update-issued-book-logs', [IssuedBookLogsController::class, 'updateIssuedBookLogs']);
+    Route::post('calculate-penalty', [IssuedBookLogsController::class, 'calculatePenalty']);
 });
